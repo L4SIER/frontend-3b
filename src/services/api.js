@@ -81,7 +81,6 @@ export async function login(email, senha) {
   // 7) Devolve os dados prontos para o componente usar.
   return dados; // → { sucesso, mensagem, token, usuario: { id, nome, email } }
 }
-
 // ╔═════════════════════════════════════════════════════════════════════╗
 // ║                                                                     ║
 // ║   🚧  TAREFA 1 — ENVIO  (POST)                                      ║
@@ -90,12 +89,6 @@ export async function login(email, senha) {
 // ║   Onde isso aparece na tela: aba "Criar conta".                     ║
 // ║                                                                     ║
 // ╚═════════════════════════════════════════════════════════════════════╝
-//
-//  RECEITA:
-//    1. fetch para `${API_URL}/api/usuarios/cadastrar`
-//    2. method: "POST"
-//    3. headers com "Content-Type": "application/json"
-//    4. body: JSON.stringify({ nome, email, senha })
 //    5. converta a resposta com .json()
 //    6. se !resposta.ok → throw new Error(dados.mensagem)
 //    7. return dados
@@ -109,8 +102,19 @@ export async function login(email, senha) {
 //     Sua mensagem tem que aparecer em vermelho na tela.
 //
 export async function cadastrar(nome, email, senha) {
-  // ↓↓↓ APAGUE ESTA LINHA E ESCREVA SEU CÓDIGO ↓↓↓
-  throw new Error("🚧 TAREFA 1 ainda não foi implementada (src/services/api.js)");
+  const resposta = await fetch(`${API_URL}/api/usuarios/cadastrar`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nome, email, senha }),
+  });
+
+  const dados = await resposta.json();
+
+  if (!resposta.ok) {
+    throw new Error(dados.mensagem || "Não foi possível cadastrar.");
+  }
+
+  return dados;
 }
 
 // ╔═════════════════════════════════════════════════════════════════════╗
@@ -146,8 +150,17 @@ export async function cadastrar(nome, email, senha) {
 //  🧪 Teste o erro: apague uma letra do token antes de mandar e veja o 401.
 //
 export async function listarUsuarios(token) {
-  // ↓↓↓ APAGUE ESTA LINHA E ESCREVA SEU CÓDIGO ↓↓↓
-  throw new Error("🚧 TAREFA 2 ainda não foi implementada (src/services/api.js)");
+  const resposta = await fetch(`${API_URL}/api/usuarios`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  const dados = await resposta.json();
+
+  if (!resposta.ok) {
+    throw new Error(dados.mensagem || "Não foi possível carregar a lista de usuários.");
+  }
+
+  return dados.usuarios;
 }
 
 // ╔═════════════════════════════════════════════════════════════════════╗
